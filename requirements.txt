@@ -1,0 +1,10 @@
+pandas
+numpy
+scikit-learn
+matplotlib
+seaborn
+jupyter
+ipython
+requests
+joblib
+nfl_data_py
