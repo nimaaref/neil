@@ -31,3 +31,7 @@ pip-delete-this-directory.txt
 # SQLite Database (optional if you don't want to push it)
 *.sqlite3
 *.db
+
+#removing weekly random forest models
+historical_models_2024/
+
