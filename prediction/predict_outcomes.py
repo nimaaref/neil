@@ -15,7 +15,7 @@ config = NFLConfig()
 
 def compute_team_stats(base_model, training_cutoff_week, home_agg_dict, away_agg_dict):
     """Computes team stats up to the current week."""
-    data_up_to_current_week = base_model[base_model['week'] < training_cutoff_week]
+    data_up_to_current_week = base_model[base_model['week'] <= training_cutoff_week]
 
     # Aggregate home and away stats
     team_stats_home = data_up_to_current_week.groupby('home_team').agg(home_agg_dict).reset_index().rename(columns={'home_team': 'team'})
@@ -49,14 +49,17 @@ def predict_outcomes(model, X):
 
 def save_predictions_to_sqlite(predictions_df, conn, table_name="game_predictions"):
     """Saves predictions to an SQLite table."""
-    predictions_df.to_sql(table_name, conn, if_exists='replace', index=False)
+    predictions_df.to_sql(table_name, conn, if_exists='append', index=False)
     print(f"Predictions saved to '{table_name}' table.")
 
-def run_prediction_pipeline(conn, merged_data, model, training_cutoff_week, target_week):
+def run_prediction_pipeline(conn, merged_data, model, config):
+    training_cutoff_week = config.TRAINING_CUTOFF_WEEK
+    target_week = config.TARGET_WEEK
+
     """Main function to run the prediction pipeline."""
     # Load schedules for the prediction week from SQLite
     schedules = load_existing_nfl_data(conn, config.SCHEDULES_TABLE, '2024')
-    schedules = schedules.query(prediction_week_filter(conn))
+    schedules = schedules.query(prediction_week_filter(config))
 
     # Define aggregation dictionaries
     home_aggregation = {
@@ -101,13 +104,14 @@ def run_prediction_pipeline(conn, merged_data, model, training_cutoff_week, targ
     print(predictions_df)
 
 if __name__ == "__main__":
+    config = NFLConfig()
     # Connect to SQLite and load merged data
     conn = sqlite3.connect("nfl_data.db")
-    base_model =  load_existing_nfl_data(conn,config.BASE_MODEL_TABLE, training_data_filter(conn) )
+    base_model =  load_existing_nfl_data(conn,config.BASE_MODEL_TABLE, training_data_filter(config) )
     # Load the trained model
     model = joblib.load("random_forest_model.pkl")
 
     # Run the prediction pipeline
-    run_prediction_pipeline(conn, base_model, model, config.TRAINING_CUTOFF_WEEK, config.TARGET_WEEK)
+    run_prediction_pipeline(conn, base_model, model, config)
 
     conn.close()

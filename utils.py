@@ -75,19 +75,19 @@ def load_existing_nfl_data(conn, table_name, where_clause=None):
         return pd.DataFrame()
 
     
-def training_data_filter(self):
+def training_data_filter(config):
     """Pandas query string for training data.
         Includes all seasons before the current season. 
         Includes the current season up to the TRAINING_CUTOFF_WEEK.
         Excludes games beyond the training cutoff week in the current_season."""
     return f"(season < {config.CURRENT_SEASON}) | ((season == {config.CURRENT_SEASON}) & (week <= {config.TRAINING_CUTOFF_WEEK}))"
     
-def prediction_week_filter(self):
+def prediction_week_filter(config):
     """Pandas query string for prediction week.
         Filters only games for the target week in the current season. """
     return f"season == {config.CURRENT_SEASON} & week == {config.TARGET_WEEK}"   
 
-def schedule_filter(self):
+def schedule_filter(config):
     """Pandas query string for schedule data.
         Includes all past seasons and filters only up to the current week in the current season. 
         Excludes future weeks. """

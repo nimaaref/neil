@@ -2,15 +2,16 @@ from datetime import datetime
 import nfl_data_py as nfl
 
 class NFLConfig:
-    def __init__(self):
+    def __init__(self, target_week=None, training_cutoff_week = None):
         # Season configuration
         self.SEASONS = [2024, 2023, 2022, 2021, 2020, 2019, 2018]  # All seasons to pull
         self.CURRENT_SEASON = 2024
         self.SEASON_START_DATE = datetime(2024, 9, 5)
         
-        # Week configuration
-        self.TARGET_WEEK = 17      # Week to predict
-        self.TRAINING_CUTOFF_WEEK = 16  # Use data up to this week for training
+        # Week configuration (use passed values if available)
+        self.TARGET_WEEK = target_week if target_week is not None else 2
+        self.TRAINING_CUTOFF_WEEK = training_cutoff_week if training_cutoff_week is not None else 1
+
         
         # Database configuration
         self.DB_PATH = "nfl_data.db"

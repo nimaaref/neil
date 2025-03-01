@@ -33,7 +33,7 @@ def show_missing_records(df, columns_with_nulls, conn):
         print("Missing records saved to 'missing_records' table.")
     return
 
-def prepare_features_and_target(df, columns_to_drop, target_column):
+def prepare_features_and_target(df, columns_to_drop, target_column,conn):
     """Prepare the features and target for the model."""
     X = df.drop(columns=columns_to_drop)
     y = df[target_column]
@@ -92,7 +92,7 @@ def feature_importance(model, feature_names):
     print(importances.head(10))
     return importances
 
-def run_classification_pipeline(df, config):
+def run_classification_pipeline(df, config,conn):
     """Main function to run the classification model pipeline."""
     columns_to_drop = ['game_id', 'home_team', 'away_team', 'outcome', 'score_diff', 'game_total_points']
     target_column = 'outcome'
@@ -105,7 +105,7 @@ def run_classification_pipeline(df, config):
         show_missing_records(df, columns_with_nulls, conn)
 
     # Step 3: Prepare features and target variable
-    X, y = prepare_features_and_target(df, columns_to_drop, target_column)
+    X, y = prepare_features_and_target(df, columns_to_drop, target_column,conn)
 
     # Step 4: Train-test split
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
@@ -132,7 +132,7 @@ if __name__ == "__main__":
 
     # Load data from SQLite
     with sqlite3.connect(config.DB_PATH) as conn:
-        query = f"SELECT * FROM base_model WHERE {training_data_filter(conn)}"
+        query = f"SELECT * FROM base_model WHERE {training_data_filter(config)}"
         merged_data = pd.read_sql_query(query, conn)
 
     # Run the full model training pipeline
