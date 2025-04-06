@@ -9,8 +9,8 @@ class NFLConfig:
         self.SEASON_START_DATE = datetime(2024, 9, 5)
         
         # Week configuration (use passed values if available)
-        self.TARGET_WEEK = target_week if target_week is not None else 2
-        self.TRAINING_CUTOFF_WEEK = training_cutoff_week if training_cutoff_week is not None else 1
+        self.TARGET_WEEK = target_week if target_week is not None else 13
+        self.TRAINING_CUTOFF_WEEK = training_cutoff_week if training_cutoff_week is not None else 12
 
         
         # Database configuration

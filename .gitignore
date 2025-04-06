@@ -9,6 +9,7 @@ __pycache__/
 *.so
 *.egg-info/
 *.pyd
+*.pkl
 
 # IDE files
 .vscode/

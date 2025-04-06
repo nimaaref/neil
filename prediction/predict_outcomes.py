@@ -60,6 +60,9 @@ def run_prediction_pipeline(conn, merged_data, model, config):
     # Load schedules for the prediction week from SQLite
     schedules = load_existing_nfl_data(conn, config.SCHEDULES_TABLE, '2024')
     schedules = schedules.query(prediction_week_filter(config))
+    cols_to_zero = ['home_score','away_score']
+    schedules.loc[:, cols_to_zero] = 0
+
 
     # Define aggregation dictionaries
     home_aggregation = {

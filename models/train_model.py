@@ -136,7 +136,7 @@ if __name__ == "__main__":
         merged_data = pd.read_sql_query(query, conn)
 
     # Run the full model training pipeline
-    model = run_classification_pipeline(merged_data, config)
+    model = run_classification_pipeline(merged_data, config,conn)
 
     # Save trained model
     model_filename = "random_forest_model.pkl"

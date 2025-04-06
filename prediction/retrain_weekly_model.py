@@ -55,12 +55,12 @@ for week in range(1, 23):  # 18 Regular Season + 4 Playoff Weeks
     
     # Load base data again to ensure it's up to date
     base_model_data = pd.read_sql(
-    f"SELECT * FROM {config.BASE_MODEL_TABLE} WHERE season <= {config.CURRENT_SEASON} AND week <= {config.TRAINING_CUTOFF_WEEK}",
+    f"SELECT * FROM {config.BASE_MODEL_TABLE} WHERE season <= {config.CURRENT_SEASON} AND week <= {week-1}",
     conn
 )
     
     # Run predictions
-    prediction_week_data = base_model_data[base_model_data["week"] <= config.TRAINING_CUTOFF_WEEK]
+    prediction_week_data = base_model_data[base_model_data["week"] <= week]
     run_prediction_pipeline(conn, prediction_week_data, model, config)
 
     print(f"Predictions for Week {week} saved to SQLite database")
