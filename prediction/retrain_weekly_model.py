@@ -38,9 +38,9 @@ for week in range(1, 23):  # 18 Regular Season + 4 Playoff Weeks
     
     # Load training data
     if week == 1:
-        query = f"SELECT * FROM {config.BASE_MODEL_TABLE} WHERE season == {config.CURRENT_SEASON} - 1 AND week >= 1"
+        query = f"SELECT * FROM {config.RF_TRAINING_DATA} WHERE season == {config.CURRENT_SEASON} - 1 AND week >= 1"
     else:
-        query = f"SELECT * FROM {config.BASE_MODEL_TABLE} WHERE season < {config.CURRENT_SEASON} OR (season == {config.CURRENT_SEASON} AND week <= {config.TRAINING_CUTOFF_WEEK})"
+        query = f"SELECT * FROM {config.RF_TRAINING_DATA} WHERE season < {config.CURRENT_SEASON} OR (season == {config.CURRENT_SEASON} AND week <= {config.TRAINING_CUTOFF_WEEK})"
     training_data = pd.read_sql(query, conn)
     
     if training_data.empty:
@@ -55,7 +55,7 @@ for week in range(1, 23):  # 18 Regular Season + 4 Playoff Weeks
     
     # Load base data again to ensure it's up to date
     base_model_data = pd.read_sql(
-    f"SELECT * FROM {config.BASE_MODEL_TABLE} WHERE season <= {config.CURRENT_SEASON} AND week <= {week-1}",
+    f"SELECT * FROM {config.RF_TRAINING_DATA} WHERE season <= {config.CURRENT_SEASON} AND week <= {week-1}",
     conn
 )
     

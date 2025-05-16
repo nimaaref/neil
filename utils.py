@@ -126,3 +126,58 @@ def import_data(conn, table_name, endpoint=None, final_table=None):
         print(f"Data imported successfully into {final_table} (up to week {calculate_current_week()} of {config.CURRENT_SEASON})")
     
     return data
+
+
+def run_sql_file_and_save_to_table(conn, sql_file_path, output_table_name, if_exists="replace", verbose=True):
+    """
+    Reads a SQL query from a file, executes it, and saves the result to a table.
+    
+    Args:
+        conn: SQLite connection.
+        sql_file_path: Path to the .sql file.
+        output_table_name: Name for the output table.
+        if_exists: What to do if the table exists ("replace", "append", or "fail").
+        verbose: If True, prints status messages.
+    """
+    # Read SQL file
+    with open(sql_file_path, "r", encoding="utf-8") as file:
+        query = file.read().strip()
+    
+    if verbose:
+        print("Executing SQL from:", sql_file_path)
+    
+    # Execute query and load result into DataFrame
+    df = pd.read_sql_query(query, conn)
+    
+    # Save the result to the target table
+    df.to_sql(output_table_name, conn, if_exists=if_exists, index=False)
+    
+    if verbose:
+        print(f"Table '{output_table_name}' created with {len(df)} rows.")
+        print(df.head())
+    
+    return df
+
+
+def build_season_week_filter(config, lag_window=3):
+    """
+    Builds a SQL-compatible WHERE clause for weeks leading up to the target week.
+    Handles cross-season logic for early weeks.
+    """
+    current_season = config.CURRENT_SEASON
+    target_week = config.TARGET_WEEK
+
+    if target_week == 1:
+        return "(season = {prev_season} AND week IN (16, 17, 18))".format(prev_season=current_season - 1)
+    elif target_week == 2:
+        return ("(season = {prev_season} AND week IN (17, 18)) "
+                "OR (season = {current_season} AND week = 1)").format(
+                    prev_season=current_season - 1, current_season=current_season)
+    elif target_week == 3:
+        return ("(season = {prev_season} AND week = 18) "
+                "OR (season = {current_season} AND week IN (1, 2))").format(
+                    prev_season=current_season - 1, current_season=current_season)
+    else:
+        lag_weeks = list(range(target_week - lag_window, target_week))
+        lag_week_str = ", ".join(str(w) for w in lag_weeks)
+        return f"(season = {current_season} AND week IN ({lag_week_str}))"

@@ -20,6 +20,8 @@ class NFLConfig:
         self.BASE_MODEL_TABLE = 'base_model'
         self.STAGING_WEEKLY_STATS_TABLE = "stg_weekly_scores"
         self.STAGING_SCHEDULES_TABLE = "stg_schedules"
+        self.RF_TRAINING_DATA = 'rf_training_data'
+        self.RF_PREDICTION_DATA = 'rf_prediction_table'
 
         # Endpoint configurations
         self.SCHEDULE_ENDPOINT = nfl.import_schedules
@@ -44,12 +46,11 @@ class NFLConfig:
             'over_odds', 'div_game'
         ]
 
-        self.TRAINING_COLUMNS = ['home_score', 'away_score', 'away_rest', 'home_rest', 'away_moneyline', 'home_moneyline', 'spread_line',
-                                  'away_spread_odds', 'home_spread_odds', 'total_line', 'under_odds', 'over_odds', 'div_game', 'passing_yards_home', 'rushing_yards_home', 'sacks_home', 'carries_home', 'targets_home',
-                                    'receptions_home', 'passing_tds_home', 'rushing_tds_home', 'receiving_tds_home', 'interceptions_home', 'rushing_fumbles_home', 'special_teams_tds_home', 'receiving_yards_home', 'passing_yards_away', 
-                                    'rushing_yards_away', 'sacks_away', 'carries_away', 'targets_away', 'receptions_away', 'passing_tds_away', 'rushing_tds_away', 'receiving_tds_away', 'interceptions_away', 'rushing_fumbles_away', 
-                                    'special_teams_tds_away', 'receiving_yards_away','total_score_away','total_score_home','total_yards_offense_away','total_yards_offense_home', 'turnovers_offense_away','turnovers_offense_home']
-        
+        self.TRAINING_COLUMNS = ['season', 'week','game_type_num', 'home_rest', 'away_rest', 'home_moneyline', 'away_moneyline', 'spread_line', 'home_spread_odds', 'away_spread_odds', 'total_line', 'under_odds', 'over_odds', 'div_game', 'passing_yards_home', 'rushing_yards_home', 'receiving_yards_home', 'sacks_home', 'rushing_fumbles_home', 'receiving_fumbles_home', 'sack_fumbles_home', 'interceptions_home', 'targets_home', 'carries_home', 'receptions_home',  'passing_yards_away', 'rushing_yards_away', 'receiving_yards_away', 'interceptions_away',  'sacks_away', 'rushing_fumbles_away', 'receiving_fumbles_away', 'sack_fumbles_away',  'carries_away', 'targets_away', 'receptions_away']
+
+
+ #['season', 'week','game_type_num', 'home_rest', 'away_rest', 'home_moneyline', 'away_moneyline', 'spread_line', 'home_spread_odds', 'away_spread_odds', 'total_line', 'under_odds', 'over_odds', 'div_game', 'passing_yards_home', 'rushing_yards_home', 'receiving_yards_home', 'sacks_home', 'special_teams_tds_home', 'rushing_fumbles_home', 'receiving_fumbles_home', 'sack_fumbles_home', 'interceptions_home', 'passing_tds_home', 'rushing_tds_home', 'receiving_tds_home', 'targets_home', 'carries_home', 'receptions_home', 'passing_2pt_conversions_home', 'rushing_2pt_conversions_home', 'touchdown_points_home', 'kicking_points_home', 'passing_yards_away', 'rushing_yards_away', 'receiving_yards_away', 'passing_tds_away', 'rushing_tds_away', 'interceptions_away', 'special_teams_tds_away', 'sacks_away', 'rushing_fumbles_away', 'receiving_fumbles_away', 'sack_fumbles_away', 'receiving_tds_away', 'carries_away', 'targets_away', 'receptions_away', 'passing_2pt_conversions_away', 'rushing_2pt_conversions_away', 'touchdown_points_away', 'kicking_points_away']
+
         # Game type mapping
         self.GAME_TYPE_MAPPING = {
             'REG': 'REG',
